@@ -1,0 +1,104 @@
+#summary Learn how to use PrettyTable by seeing straight-forward examples.
+#labels Featured,tutorial
+
+PrettyTable is best explained by example. It is designed to let you write something like this:
+
+{{{
+x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
+x.set_field_align("City name", "l") # Left align city names
+x.set_padding_width(1) # One space between column edges and contents (default)
+x.add_row(["Adelaide",1295, 1158259, 600.5])
+x.add_row(["Brisbane",5905, 1857594, 1146.4])
+x.add_row(["Darwin", 112, 120900, 1714.7])
+x.add_row(["Hobart", 1357, 205556, 619.5])
+x.add_row(["Sydney", 2058, 4336374, 1214.8])
+x.add_row(["Melbourne", 1566, 3806092, 646.9])
+x.add_row(["Perth", 5386, 1554769, 869.4])
+print x
+}}}
+
+in order to get something like this:
+
+{{{
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+| Adelaide  | 1295 |  1158259   |      600.5      |
+| Brisbane  | 5905 |  1857594   |      1146.4     |
+| Darwin    | 112  |   120900   |      1714.7     |
+| Hobart    | 1357 |   205556   |      619.5      |
+| Sydney    | 2058 |  4336374   |      1214.8     |
+| Melbourne | 1566 |  3806092   |      646.9      |
+| Perth     | 5386 |  1554769   |      869.4      |
++-----------+------+------------+-----------------+
+}}}
+
+You can use x.add_column to build the table up column-by-column instead of row-by-row, if you're so inclined.
+
+If you're only interested in showing the city populations, you can do this (note the double 't' in "printt", which is necessary because "print" is a reserved word in Python):
+
+{{{
+x.printt(fields=["City name", "Population"])
+}}}
+
+and get this:
+
+{{{
++-----------+------------+
+| City name | Population |
++-----------+------------+
+| Adelaide  |  1158259   |
+| Brisbane  |  1857594   |
+| Darwin    |   120900   |
+| Hobart    |   205556   |
+| Sydney    |  4336374   |
+| Melbourne |  3806092   |
+| Perth     |  1554769   |
++-----------+------------+
+}}}
+
+You can print only the first 3 rows of the table by doing this:
+
+{{{
+x.printt(start=0,end=3)
+}}}
+
+which gives you this:
+
+{{{
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+| Adelaide  | 1295 |  1158259   |      600.5      |
+| Brisbane  | 5905 |  1857594   |      1146.4     |
+| Darwin    | 112  |   120900   |      1714.7     |
++-----------+------+------------+-----------------+
+}}}
+
+You can sort the rows of your table by a particular column like this:
+
+{{{
+x.printt(sortby="Annual Rainfall")
+}}}
+
+which gives you this:
+
+{{{
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+| Adelaide  | 1295 |  1158259   |      600.5      |
+| Hobart    | 1357 |   205556   |      619.5      |
+| Melbourne | 1566 |  3806092   |      646.9      |
+| Perth     | 5386 |  1554769   |      869.4      |
+| Brisbane  | 5905 |  1857594   |      1146.4     |
+| Sydney    | 2058 |  4336374   |      1214.8     |
+| Darwin    | 112  |   120900   |      1714.7     |
++-----------+------+------------+-----------------+
+}}}
+
+If you don't want to actually print your table but instead just get a string of exactly what would be printed if you called printt (e.g. so you can save it to a file), then you can call the get_string method, which takes all the arguments of printt shown above (fields, start and end).
+
+Instead of an ASCII table, you can call print_HTML to print out a HTML <table> structure or get_HTML_string to get a string copy of what would be printed.
+
+There are some other methods for controlling fine details of the printing process, that you can read about in the complete API.
