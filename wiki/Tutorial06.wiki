@@ -1,0 +1,211 @@
+#summary Tutorial on how to use the new PrettyTable 0.6 API
+
+= THIS IS A WORK IN PROGRESS!!! =
+
+Once 0.6 is released this page will be completed and will replace the existing Tutorial page.  It's been put here now early to help people test the 0.6 release candidates.
+
+= Getting your data into the table =
+
+Let's suppose you have a shiny new PrettyTable:
+
+{{{
+from prettytable import PrettyTable
+x = PrettyTable
+}}}
+
+and you want to put some data into it.  You have two (sane) options
+
+== Row by row ==
+
+You can add data one row at a time.  To do this you need to set the field names first using the `set_field_names` method, and then add the rows one at a time using the `add_row` method:
+
+{{{
+x.set_field_names
+}}}
+
+== Column by column ==
+
+You can add data one column at a time as well.  To do this you use the `add_column` method, which takes two arguments - a string which is the name for the field the column you are adding corresponds to, and a list or tuple which contains the column data"
+
+{{{
+x.set_field_names
+}}}
+
+== Mixing and matching ==
+
+If you really want to, you can even mix and match `add_row` and `add_column` and build some of your table in one way and some of it in the other.  There's a unit test which makes sure that doing things this way will always work out nicely as if you'd done it using just one of the two approaches.  Tables built this way are kind of confusing for other people to read, though, so don't do this unless you have a good reason.
+
+= Displaying your table in ASCII form =
+
+PrettyTable's main goal is to let you print tables in an attractive ASCII form, like this:
+
+{{{
+EXAMPLE
+}}}
+
+You can print tables like this to `stdout` or get string representations of them.
+
+== Printing ==
+
+To print a table in ASCII form, you just call the `printt` method.  Be sure to use two letter 't's.  Unfortunately, the method name can't be just `print` since this is a reserved word in Python (for obvious reasons).
+
+{{{
+x.printt()
+}}}
+
+If you like, you can also just use `print x` and you'll get exactly the same result.  The one downside to this approach is that you have less flexibility - the `printt` method can take arguments (see later) to change the print style, but with `print x` you can't do this.
+
+== Stringing ==
+
+If you don't want to actually print your table in ASCII form but just get a string containing what _would_ be printed if you called `printt`, you can use the `get_string` method:
+
+{{{
+mystring = x.get_string()
+}}}
+
+This string is guaranteed to look exactly the same as what would be printed by a call to `printt`.  You can now do all the usual things you can do with a string, like write your table to a file or insert it into a GUI.
+
+= Displaying your table with the data sorted by a given field =
+
+You can make sure that your ASCII tables are produced with the data sorted by one particular field by giving either `printt` or `get_string` a `sortby` keyword argument, which must be a string containing the name of one field.
+
+For example, to print the example table we built earlier of Australian capital city data, so that the most populated city comes last, we can do this:
+
+{{{
+x.printt(sortby="Population")
+}}}
+
+to get
+
+{{{
+TABLE
+}}}
+
+If we want the most populated city to come _first_, we can also give a `reversesort=True` argument.
+
+If you _always_ want your tables to be sorted in a certain way, you can make the setting long term like this:
+
+{{{
+x.sortby = "Population"
+x.printt()
+x.printt()
+x.printt()
+}}}
+
+All three tables printed by this code will be sorted by population (you could do `x.reversesort = True` as well, if you wanted).  The behaviour will persist until you turn it off:
+
+{{{
+x.sortby = None
+}}}
+
+= Changing the appearance of your table - the easy way =
+
+By default, PrettyTable produces ASCII tables that look like the ones used in SQL database shells.  But if can print them in a variety of other formats as well.  If the format you want to use is common, PrettyTable makes this very easy for you to do using the `set_style` method.  If you want to produce an uncommon table, you'll have to do things slightly harder (see later).
+
+== Setting a table style ==
+
+You can set the style for your table using the `set_style` method before any calls to `printt` or `get_string`.  Here's how to print a table in a format which works nicely with Microsoft Word's "Convert to table" feature:
+
+{{{
+from prettytable import MSWORD_FRIENDLY
+x.set_style(MSWORD_FRIENDLY)
+x.printt()
+}}}
+
+In addition to `MSWORD_FRIENDLY` there are currently two other in-built styles you can use for your tables:
+
+  * `DEFAULT` - The default look, used to undo any style changes you may have made
+  * `PLAIN_COLUMN` - A borderless style that works well with command line programs for columnar data
+
+Other styles are likely to appear in future releases.
+
+= Changing the appearance of your table - the hard way =
+
+If you want to display your table in a style other than one of the in-built styles listed above, you'll have to set things up the hard way.
+
+Don't worry, it's not really that hard!
+
+== Style options ==
+
+PrettyTable has a number of style options which control various aspects of how tables are displayed.  You have the freedom to set each of these options individually to whatever you prefer.  The `set_style` method just does this automatically for you.
+
+The options are these:
+
+  * `border` - A boolean option (must be `True` or `False`).  Controls whether or not a border is drawn around the table
+  * etc...
+
+You can set the style options to your own settings in two ways:
+
+== Setting style options for the long term ==
+
+If you want to print your table with a different style several times, you can set your option for the "long term" just by changing the appropriate attributes.  If you never want your tables to have borders you can do this:
+
+{{{
+x.border = False
+x.printt()
+x.printt()
+x.printt()
+}}}
+
+Neither of the 3 tables printed by this will have borders, even if you do things like add extra rows inbetween them.  The lack of borders will last until you do:
+
+{{{
+x.border = True
+}}}
+
+to turn them on again.  This sort of long term setting is exactly how `set_style` works.  `set_style` just sets a bunch of attributes to pre-set values for you.
+
+Note that if you know what style options you want at the moment you are creating your table, you can specify them using keyword arguments to the constructor.  For example, the following two code blocks are equivalent:
+
+{{{
+x = PrettyTable()
+x.border = False
+x.header = False
+x.padding_width = 5
+}}}
+
+{{{
+x = PrettyTable(border=False, header=False, padding_width=5)
+}}}
+
+== Changing style options just once ==
+
+If you don't want to make long term style changes by changing an attribute like in the previous section, you can make changes that last for just one `printt` or ``get_string`` by giving those methods keyword arguments.  To print two "normal" tables with one borderless table between them, you could do this:
+
+{{{
+x.printt()
+x.printt(border=False)
+x.printt()
+}}}
+
+= Displaying your table in HTML form =
+
+PrettyTable will also print your tables in HTML form, as `<table>`s.  Just like in ASCII form, you can actually print your table - just use `print_html()` - or get a string representation - just use `get_html_string()`.  HTML printing supports the `sortby` and `reversesort` arguments that we saw earlier in exactly the same way as ASCII printing.
+
+== Setting HTML attributes ==
+
+TODO
+
+== Styling HTML tables ==
+
+By default, PrettyTable outputs HTML for "vanilla" tables.  The HTML code is quite simple.  It looks like this:
+
+{{{
+GET CODE
+}}}
+
+and the tables themselves look like this:
+
+{{{
+GET TABLE
+}}}
+
+If you like, you can ask PrettyTable to do its best to mimick the style options that your table has set using inline CSS.  This is done by giving a `format=True` keyword argument to either the `print_html` or `get_html_string` methods.  Note that if you _always_ want to print formatted HTML you can do:
+
+{{{
+x.format = True
+}}}
+
+and the setting will persist until you turn it off.
+
+Just like with ASCII tables, if you want to change the table's style for just one `print_html` or one `get_html_string` you can pass those methods keyword arguments - exactly like `printt` and `get_string`.
