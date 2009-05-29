@@ -4,13 +4,15 @@
 
 Once 0.6 is released this page will be completed and will replace the existing Tutorial page.  It's been put here now early to help people test the 0.6 release candidates.
 
+<wiki:toc max_depth="2" />
+
 = Getting your data into the table =
 
 Let's suppose you have a shiny new PrettyTable:
 
 {{{
 from prettytable import PrettyTable
-x = PrettyTable
+x = PrettyTable()
 }}}
 
 and you want to put some data into it.  You have two (sane) options
@@ -20,7 +22,14 @@ and you want to put some data into it.  You have two (sane) options
 You can add data one row at a time.  To do this you need to set the field names first using the `set_field_names` method, and then add the rows one at a time using the `add_row` method:
 
 {{{
-x.set_field_names
+x.set_field_names(["City name", "Area", "Population", "Annual Rainfall"])
+x.add_row(["Adelaide",1295, 1158259, 600.5])
+x.add_row(["Brisbane",5905, 1857594, 1146.4])
+x.add_row(["Darwin", 112, 120900, 1714.7])
+x.add_row(["Hobart", 1357, 205556, 619.5])
+x.add_row(["Sydney", 2058, 4336374, 1214.8])
+x.add_row(["Melbourne", 1566, 3806092, 646.9])
+x.add_row(["Perth", 5386, 1554769, 869.4])
 }}}
 
 == Column by column ==
@@ -28,7 +37,10 @@ x.set_field_names
 You can add data one column at a time as well.  To do this you use the `add_column` method, which takes two arguments - a string which is the name for the field the column you are adding corresponds to, and a list or tuple which contains the column data"
 
 {{{
-x.set_field_names
+x.add_column("City name", ["Adelaide","Brisbane","Darwin","Hobart","Sydney","Melbourne","Perth"])
+x.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
+x.add_column("Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769])
+x.add_column("Annual Rainfall",[600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4])
 }}}
 
 == Mixing and matching ==
@@ -40,7 +52,17 @@ If you really want to, you can even mix and match `add_row` and `add_column` and
 PrettyTable's main goal is to let you print tables in an attractive ASCII form, like this:
 
 {{{
-EXAMPLE
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+| Adelaide  | 1295 |  1158259   |      600.5      |
+| Brisbane  | 5905 |  1857594   |      1146.4     |
+| Darwin    | 112  |   120900   |      1714.7     |
+| Hobart    | 1357 |   205556   |      619.5      |
+| Melbourne | 1566 |  3806092   |      646.9      |
+| Perth     | 5386 |  1554769   |      869.4      |
+| Sydney    | 2058 |  4336374   |      1214.8     |
++-----------+------+------------+-----------------+
 }}}
 
 You can print tables like this to `stdout` or get string representations of them.
@@ -65,6 +87,34 @@ mystring = x.get_string()
 
 This string is guaranteed to look exactly the same as what would be printed by a call to `printt`.  You can now do all the usual things you can do with a string, like write your table to a file or insert it into a GUI.
 
+= Changing the alignment of columns =
+
+By default, all columns in a table are centre aligned.  You can change this on a column by column basis using the `set_field_align` method, which takes two arguments - the name of a field, and a one character string from the set `("l","r","c")`, to achieve left, right and centre alignment, respectively:
+
+{{{
+x.set_field_align("City name", "l")
+x.set_field_align("Area", "c")
+x.set_field_align("Population", "r")
+x.set_field_align("Annual Rainfall", "l")
+x.printt()
+}}}
+
+gives:
+
+{{{
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+| Adelaide  | 1295 |    1158259 | 600.5           |
+| Brisbane  | 5905 |    1857594 | 1146.4          |
+| Darwin    | 112  |     120900 | 1714.7          |
+| Hobart    | 1357 |     205556 | 619.5           |
+| Sydney    | 2058 |    4336374 | 1214.8          |
+| Melbourne | 1566 |    3806092 | 646.9           |
+| Perth     | 5386 |    1554769 | 869.4           |
++-----------+------+------------+-----------------+
+}}}
+
 = Displaying your table with the data sorted by a given field =
 
 You can make sure that your ASCII tables are produced with the data sorted by one particular field by giving either `printt` or `get_string` a `sortby` keyword argument, which must be a string containing the name of one field.
@@ -78,7 +128,18 @@ x.printt(sortby="Population")
 to get
 
 {{{
-TABLE
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+| Darwin    | 112  |   120900   |      1714.7     |
+| Hobart    | 1357 |   205556   |      619.5      |
+| Adelaide  | 1295 |  1158259   |      600.5      |
+| Perth     | 5386 |  1554769   |      869.4      |
+| Brisbane  | 5905 |  1857594   |      1146.4     |
+| Melbourne | 1566 |  3806092   |      646.9      |
+| Sydney    | 2058 |  4336374   |      1214.8     |
++-----------+------+------------+-----------------+
+
 }}}
 
 If we want the most populated city to come _first_, we can also give a `reversesort=True` argument.
@@ -182,22 +243,32 @@ x.printt()
 
 PrettyTable will also print your tables in HTML form, as `<table>`s.  Just like in ASCII form, you can actually print your table - just use `print_html()` - or get a string representation - just use `get_html_string()`.  HTML printing supports the `sortby` and `reversesort` arguments that we saw earlier in exactly the same way as ASCII printing.
 
-== Setting HTML attributes ==
-
-TODO
-
 == Styling HTML tables ==
 
 By default, PrettyTable outputs HTML for "vanilla" tables.  The HTML code is quite simple.  It looks like this:
 
 {{{
-GET CODE
-}}}
-
-and the tables themselves look like this:
-
-{{{
-GET TABLE
+<table border="1">
+    <tr>
+        <th>City name</th>
+        <th>Area</th>
+        <th>Population</th>
+        <th>Annual Rainfall</th>
+    </tr>
+    <tr>
+        <td>Adelaide</td>
+        <td>1295</td>
+        <td>1158259</td>
+        <td>600.5</td>
+    <tr>
+        <td>Brisbane</td>
+        <td>5905</td>
+        <td>1857594</td>
+        <td>1146.4</td>
+    ...
+    ...
+    ...
+</table>
 }}}
 
 If you like, you can ask PrettyTable to do its best to mimick the style options that your table has set using inline CSS.  This is done by giving a `format=True` keyword argument to either the `print_html` or `get_html_string` methods.  Note that if you _always_ want to print formatted HTML you can do:
@@ -209,3 +280,27 @@ x.format = True
 and the setting will persist until you turn it off.
 
 Just like with ASCII tables, if you want to change the table's style for just one `print_html` or one `get_html_string` you can pass those methods keyword arguments - exactly like `printt` and `get_string`.
+
+== Setting HTML attributes ==
+
+You can provide a dictionary of HTML attribute name/value pairs to the `print_html` and `get_html_string` methods using the `attributes` keyword argument.  This lets you specify common HTML attributes like `name`, `id` and `class` that can be used for linking to your tables or customising their appearance using CSS.  For example:
+
+{{{
+x.print_html(attributes={"name":"my_table", "class":"red_table"})
+}}}
+
+will print:
+
+{{{
+<table border="1" name="my_table" class="red_table">
+    <tr>
+        <th>City name</th>
+        <th>Area</th>
+        <th>Population</th>
+        <th>Annual Rainfall</th>
+    </tr>
+    ...
+    ...
+    ...
+</table>
+}}}
