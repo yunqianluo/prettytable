@@ -87,7 +87,51 @@ mystring = x.get_string()
 
 This string is guaranteed to look exactly the same as what would be printed by a call to `printt`.  You can now do all the usual things you can do with a string, like write your table to a file or insert it into a GUI.
 
-= Changing the alignment of columns =
+== Controlling which data gets displayed ==
+
+If you like, you can restrict the output of `printt` or `get_string` to only the fields or rows you like.
+
+The `fields` argument to these methods takes a list of field names to be printed:
+
+{{{
+x.printt(fields=["City name", "Population"])
+}}}
+
+gives:
+
+{{{
++-----------+------------+
+| City name | Population |
++-----------+------------+
+| Adelaide  |  1158259   |
+| Brisbane  |  1857594   |
+| Darwin    |   120900   |
+| Hobart    |   205556   |
+| Melbourne |  3806092   |
+| Perth     |  1554769   |
+| Sydney    |  4336374   |
++-----------+------------+
+}}}
+
+The `start` and `end` arguments take the index of the first and last row to print respectively.  Note that the indexing works like Python list slicing - to print the 2nd, 3rd and 4th rows of the table, set `start` to 1 (the first row is row 0, so the second is row 1) and set `end` to 4 (the index of the 4th row, plus 1):
+
+{{{
+x.printt(start=1,end=4)
+}}}
+
+prints:
+
+{{{
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+| Brisbane  | 5905 |    1857594 | 1146.4          |
+| Darwin    | 112  |     120900 | 1714.7          |
+| Hobart    | 1357 |     205556 | 619.5           |
++-----------+------+------------+-----------------+
+}}}
+
+== Changing the alignment of columns ==
 
 By default, all columns in a table are centre aligned.  You can change this on a column by column basis using the `set_field_align` method, which takes two arguments - the name of a field, and a one character string from the set `("l","r","c")`, to achieve left, right and centre alignment, respectively:
 
@@ -115,7 +159,7 @@ gives:
 +-----------+------+------------+-----------------+
 }}}
 
-= Displaying your table with the data sorted by a given field =
+== Sorting your table by a field ==
 
 You can make sure that your ASCII tables are produced with the data sorted by one particular field by giving either `printt` or `get_string` a `sortby` keyword argument, which must be a string containing the name of one field.
 
@@ -192,8 +236,15 @@ PrettyTable has a number of style options which control various aspects of how t
 
 The options are these:
 
-  * `border` - A boolean option (must be `True` or `False`).  Controls whether or not a border is drawn around the table
-  * etc...
+  * `border` - A boolean option (must be `True` or `False`).  Controls whether or not a border is drawn around the table.
+  * `header` - A boolean option (must be `True` or `False`).  Controls whether or not the first row of the table is a header showing the names of all the fields.
+  * `hrules` - Controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE - note that these are variables defined inside the `prettytable` module so make sure you import them or use `prettytable.FRAME` etc.
+  * `padding_width` - Number of spaces on either side of column data (only used if left and right paddings are None).
+  * `left_padding_width` - Number of spaces on left hand side of column data.
+  * `right_padding_width` - Number of spaces on right hand side of column data.
+  * `vertical_char` - Single character string used to draw vertical lines.  Default is `|`.
+  * `horizontal_char` - Single character string used to draw horizontal lines.  Default is `-`.
+  * `junction_char` - Single character string used to draw line junctions.  Default is `+`.
 
 You can set the style options to your own settings in two ways:
 
