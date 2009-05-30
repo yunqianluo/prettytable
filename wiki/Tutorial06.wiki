@@ -292,7 +292,7 @@ x.printt()
 
 = Displaying your table in HTML form =
 
-PrettyTable will also print your tables in HTML form, as `<table>`s.  Just like in ASCII form, you can actually print your table - just use `print_html()` - or get a string representation - just use `get_html_string()`.  HTML printing supports the `sortby` and `reversesort` arguments that we saw earlier in exactly the same way as ASCII printing.
+PrettyTable will also print your tables in HTML form, as `<table>`s.  Just like in ASCII form, you can actually print your table - just use `print_html()` - or get a string representation - just use `get_html_string()`.  HTML printing supports the `fields`, `start`, `end`, `sortby` and `reversesort` arguments in exactly the same way as ASCII printing.
 
 == Styling HTML tables ==
 
