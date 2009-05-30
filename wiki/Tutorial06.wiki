@@ -364,3 +364,9 @@ will print:
     ...
 </table>
 }}}
+
+= Miscellaneous things =
+
+== Copying a table ==
+
+You can call the `copy` method on a PrettyTable object without arguments to return an identical independent copy of the table.
