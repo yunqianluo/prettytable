@@ -142,13 +142,14 @@ prints:
 
 == Changing the alignment of columns ==
 
-By default, all columns in a table are centre aligned.  You can change this on a column by column basis using the `set_field_align` method, which takes two arguments - the name of a field, and a one character string from the set `("l","r","c")`, to achieve left, right and centre alignment, respectively:
+By default, all columns in a table are centre aligned.
+
+=== All columns at once ===
+
+You can change the alignment of all the columns in a table at once by assigning a one character string to the `align` attribute.  The allowed strings are "l", "r" and "c" for left, right and centre alignment, respectively:
 
 {{{
-x.set_field_align("City name", "l")
-x.set_field_align("Area", "c")
-x.set_field_align("Population", "r")
-x.set_field_align("Annual Rainfall", "l")
+x.align = "r"
 x.printt()
 }}}
 
@@ -158,16 +159,43 @@ gives:
 +-----------+------+------------+-----------------+
 | City name | Area | Population | Annual Rainfall |
 +-----------+------+------------+-----------------+
-| Adelaide  | 1295 |    1158259 | 600.5           |
-| Brisbane  | 5905 |    1857594 | 1146.4          |
-| Darwin    | 112  |     120900 | 1714.7          |
-| Hobart    | 1357 |     205556 | 619.5           |
-| Sydney    | 2058 |    4336374 | 1214.8          |
-| Melbourne | 1566 |    3806092 | 646.9           |
-| Perth     | 5386 |    1554769 | 869.4           |
+|  Adelaide | 1295 |    1158259 |           600.5 |
+|  Brisbane | 5905 |    1857594 |          1146.4 |
+|    Darwin |  112 |     120900 |          1714.7 |
+|    Hobart | 1357 |     205556 |           619.5 |
+| Melbourne | 1566 |    3806092 |           646.9 |
+|     Perth | 5386 |    1554769 |           869.4 |
+|    Sydney | 2058 |    4336374 |          1214.8 |
 +-----------+------+------------+-----------------+
 }}}
 
+=== One column at a time ===
+
+You can also change the alignment of individual columns based on the corresponding field name by treating the `align` attribute as if it were a dictionary.
+
+{{{
+x.align["City name"] = "l"
+x.align["Area"] = "c"
+x.align["Population"] = "r"
+x.align["Annual Rainfall"] = "c"
+x.printt()
+}}}
+
+gives:
+
+{{{
++-----------+------+------------+-----------------+
+| City name | Area | Population | Annual Rainfall |
++-----------+------+------------+-----------------+
+| Adelaide  | 1295 |    1158259 |      600.5      |
+| Brisbane  | 5905 |    1857594 |      1146.4     |
+| Darwin    | 112  |     120900 |      1714.7     |
+| Hobart    | 1357 |     205556 |      619.5      |
+| Melbourne | 1566 |    3806092 |      646.9      |
+| Perth     | 5386 |    1554769 |      869.4      |
+| Sydney    | 2058 |    4336374 |      1214.8     |
++-----------+------+------------+-----------------+
+}}}
 == Sorting your table by a field ==
 
 You can make sure that your ASCII tables are produced with the data sorted by one particular field by giving either `printt` or `get_string` a `sortby` keyword argument, which must be a string containing the name of one field.
