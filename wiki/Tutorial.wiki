@@ -1,6 +1,11 @@
 #summary Learn how to use PrettyTable by seeing straight-forward examples.
 #labels Featured,tutorial
 
+*This tutorial is out of date!*
+
+The new PrettyTale 0.6 release includes many changes in the API which this tutorial is not compatible with.  It will be updated in the near future.  In the meantime, please see the [http://code.google.com/p/prettytable/wiki/Tutorial06 Tutorial06 article] for an up to date introduction to using PrettyTable.
+---
+
 PrettyTable is best explained by example. It is designed to let you write something like this:
 
 {{{
