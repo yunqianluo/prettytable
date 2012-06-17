@@ -1,12 +1,7 @@
 #summary Learn how to use PrettyTable by seeing straight-forward examples.
 #labels Featured,tutorial
 
-*This tutorial is out of date!*
-
-The new PrettyTale 0.6 release includes many changes in the API which this tutorial is not compatible with.  It will be updated in the near future.  In the meantime, please see the [http://code.google.com/p/prettytable/wiki/Tutorial06 Tutorial06 article] for an up to date introduction to using PrettyTable.
----
-
-PrettyTable is best explained by example. It is designed to let you write something like this:
+PrettyTable is best explained by example. It is designed to let you write something nice and simple like this:
 
 {{{
 x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
@@ -22,7 +17,7 @@ x.add_row(["Perth", 5386, 1554769, 869.4])
 print x
 }}}
 
-in order to get something like this:
+in order to get something that looks like this:
 
 {{{
 +-----------+------+------------+-----------------+
@@ -38,15 +33,59 @@ in order to get something like this:
 +-----------+------+------------+-----------------+
 }}}
 
-You can use x.add_column to build the table up column-by-column instead of row-by-row, if you're so inclined.
+PrettyTable makes it easy to display data in a nice and neat but non-graphical format that you can use in command line programs, automatically generated emails, etc.
 
-If you're only interested in showing the city populations, you can do this (note the double 't' in "printt", which is necessary because "print" is a reserved word in Python):
+== Getting data into tables ==
+
+You can use x.add_row to build a table up row-by-row, like in the example above.
+
+You can also use x.add_column to build the table up column-by-column instead of row-by-row, if you're so inclined:
 
 {{{
-x.printt(fields=["City name", "Population"])
+x = PrettyTable()
+x.add_column("City name",["Adelaide","Brisbane","Darwin","Hobart","Sydney","Melbourne","Perth"])
+x.add_column("Area", [1295, 5905, 112, 1357, 2058, 1566, 5386])
+x.add_column("Population", [1158259, 1857594, 120900, 205556, 4336374, 3806092, 1554769])
+x.add_column("Annual Rainfall",[600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869.4])
 }}}
 
-and get this:
+You can even build a table using a combination of add_row and add_column if you're careful.  It's probably not a good idea, but PrettyTable will work as long as you do it properly.
+
+== Printing and getting strings ==
+
+Once you've put data into a table, you can print the whole thing out using either 
+{{{
+print x
+}}}
+on Python 2.x or
+{{{
+print(x)
+}}}
+on Python 3.x.
+
+If you don't want to print a table but just get a string which you can, e.g., write to a file, you can use:
+{{{
+string = x.get_string()
+}}}
+The get_string method also takes a lot of arguments you can use to change the appearance of your table.  If you want to take advantage of these abilities when printing a table, you can just print the returned string:
+
+{{{
+print x.get_string()
+}}}
+on Python 2.x or
+{{{
+print(x.get_string())
+}}}
+on Python 3.x.
+
+== Selecting subsets of data ==
+
+If you're only interested in showing some of the fields in your table, you can do this:
+
+{{{
+print x.get_string(fields=["City name", "Population"])
+}}}
+(or use print() for Python 3.x) and get this:
 
 {{{
 +-----------+------------+
@@ -65,7 +104,7 @@ and get this:
 You can print only the first 3 rows of the table by doing this:
 
 {{{
-x.printt(start=0,end=3)
+print x.get_string(start=0,end=3)
 }}}
 
 which gives you this:
@@ -80,10 +119,12 @@ which gives you this:
 +-----------+------+------------+-----------------+
 }}}
 
+== Sorting tables ==
+
 You can sort the rows of your table by a particular column like this:
 
 {{{
-x.printt(sortby="Annual Rainfall")
+print x.get_string(sortby="Annual Rainfall")
 }}}
 
 which gives you this:
@@ -102,8 +143,41 @@ which gives you this:
 +-----------+------+------------+-----------------+
 }}}
 
-If you don't want to actually print your table but instead just get a string of exactly what would be printed if you called printt (e.g. so you can save it to a file), then you can call the get_string method, which takes all the arguments of printt shown above (fields, start and end).
+You can do
 
-Instead of an ASCII table, you can call print_HTML to print out a HTML <table> structure or get_HTML_string to get a string copy of what would be printed.
+{{{
+print x.get_string(sortby="Annual Rainfall", reversesort=True)
+}}}
 
-There are some other methods for controlling fine details of the printing process, that you can read about in the complete API.
+to sort the table in the reverse order (from most to least rainful).
+
+If you are going to print the table several times and you always want to sort by a certain column, you can do
+
+{{{
+x.sortby = "Annual Rainfall"
+print x
+print x
+print x
+}}}
+
+and the sorting will happen each time.  You can turn sorting off later with
+
+{{{
+x.sortby = None
+}}}
+
+Similarly, you can set reversesort to be permanently True or False in the same way.
+
+== Formatting options ==
+
+PrettyTable supports lots of formatting options to control the appearance of your table.
+
+== Making HTML tables ==
+
+Instead of an ASCII table, you can call get_html_string to get a HTML `<table>` structure.  get_html_string() supports most of the same arguments as get_string, so you can select only some rows or columns, do sorting, etc.
+
+You can use the "attribute" argument to pass a dictionary of HTML attributes that should appear in the opening `<table>` tag, e.g. if you want to get "`<table class="foo">`", so that you can use CSS to style your table, then use:
+
+{{{
+x.get_string(attributes = {"class": "foo"})
+}}}
