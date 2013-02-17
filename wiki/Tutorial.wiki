@@ -37,7 +37,11 @@ PrettyTable makes it easy to display data in a nice and neat but non-graphical f
 
 == Getting data into tables ==
 
-You can use x.add_row to build a table up row-by-row, like in the example above.
+=== Building tables manually ===
+
+There are several ways to manually enter data into a table.
+
+You can use x.add_row to build a table up row-by-row, like in the example at the start of this document.
 
 You can also use x.add_column to build the table up column-by-column instead of row-by-row, if you're so inclined:
 
@@ -50,6 +54,49 @@ x.add_column("Annual Rainfall",[600.5, 1146.4, 1714.7, 619.5, 1214.8, 646.9, 869
 }}}
 
 You can even build a table using a combination of add_row and add_column if you're careful.  It's probably not a good idea, but PrettyTable will work as long as you do it properly.
+
+=== Building tables from existing sources ===
+
+The quickest way to get data into a PrettyTable object is to build a table from data which is already stored in some table-like format.
+
+==== Building from CSV files ====
+
+If you have some data in a comma separated value (CSV) file, say "mytable.csv", you can make a PrettyTable of it as follows:
+
+{{{
+from prettytable import from_csv
+fp = open("mytable.csv", "r")
+pt = from_csv(fp)
+fp.close()
+}}}
+
+The variable pt will then be a fully populated PrettyTable object.
+
+Note that the first row of the CSV file will be interpreted as the field names and used for the table header.  If you don't want this behaviour, you can specify your own field names by passing a "field_names" keyword argument.  In this case, all rows of the CSV file will be entered as table data.
+
+==== Building from HTML code ====
+
+If you have some data in a string of HTML code using `<table>`, say in the variable html_string, you can make a PrettyTable of it as follows
+
+{{{
+from prettytable import from_html
+pts = from_html(html_string)
+}}}
+
+The variable pts will then be a list of PrettyTable objects.  There will be one PrettyTable for each `<table>` in the HTML code.
+
+If you know for a fact that your HTML code will only contain one table, then instead of using from_html to get a list of length one, you can use the from_html_one function which will return just one PrettyTable object directly.  If you give from_html_one a string containing several `<table>`s, it will throw an Exception.
+
+==== Building from SQL databases ====
+
+If you have some data in a database which has a Python API compatible with the DB-API2 specification (for example, the sqlite3 API in the standard library), you can bild a PrettyTable out of the results of a SELECT statement as follows
+
+{{{
+# db_cur is a Cursor object for your database
+from prettytable import from_db_cursor
+db_cur.execute("SELECT * FROM mytable")
+pt = from_db_cursor(db_cur)
+}}}
 
 == Printing and getting strings ==
 
