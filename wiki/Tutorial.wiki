@@ -261,7 +261,13 @@ The options are these:
 
   * `border` - A boolean option (must be `True` or `False`).  Controls whether or not a border is drawn around the table.
   * `header` - A boolean option (must be `True` or `False`).  Controls whether or not the first row of the table is a header showing the names of all the fields.
+  * `header_style` - Controls capitalisation of field names in the header.  Allowed values: "cap" (capitalise first letter of each word), "title" (title case), "upper" (all upper-case), "lower" (all lower-case) or None (don't change from original field name setting).  Default is None.
   * `hrules` - Controls printing of horizontal rules after rows.  Allowed values: FRAME, ALL, NONE - note that these are variables defined inside the `prettytable` module so make sure you import them or use `prettytable.FRAME` etc.
+  * `vrules` - Controls printing of vertical rules between columns.  Allowed values: FRAME, ALL, NONE
+  * `align` - Horizontal alignment (None, "l" (left), "c" (centre), "r" (right))
+  * `valign` - Vertical alignment (None, "t" (top), "m" (middle) or "b" (bottom))
+  * `int_format` - Controls formatting of integer data.  This should be a string which can be placed between "%" and "d" in something like `print "%d" % 42`.
+  * `float_format` - Controls formatting of floating point data.  This should be a string which can be placed between "%" and "f" in something like `print "%f" % 4.2`.
   * `padding_width` - Number of spaces on either side of column data (only used if left and right paddings are None).
   * `left_padding_width` - Number of spaces on left hand side of column data.
   * `right_padding_width` - Number of spaces on right hand side of column data.
