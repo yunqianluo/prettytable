@@ -100,39 +100,48 @@ pt = from_db_cursor(db_cur)
 
 == Printing and getting strings ==
 
-Once you've put data into a table, you can print the whole thing out using either 
-{{{
-print x
-}}}
-on Python 2.x or
-{{{
-print(x)
-}}}
-on Python 3.x.
+=== ASCII tables ===
 
-If you don't want to print a table but just get a string which you can, e.g., write to a file, you can use:
+Once you've put data into a table, you can print the whole thing out like this 
+{{{
+print x        # Python 2.x
+print(x)       # Python 3.x
+}}}
+
+If you don't want to print a table but just get a string which you can, e.g., write to a file or put in an email, you can use:
 {{{
 string = x.get_string()
 }}}
 The get_string method also takes a lot of arguments you can use to change the appearance of your table.  If you want to take advantage of these abilities when printing a table, you can just print the returned string:
 
 {{{
-print x.get_string()
+print x.get_string(border=False, padding_width=5)        # Python 2.x
+print(x.get_string(border=False, padding_width=5))       # Python 3.x
 }}}
-on Python 2.x or
+
+Note that while these are called "ASCII tables", this is just refering to the visual style of the tables.  The get_string() method returns a unicode object, not an ASCII-encoded byte string.
+
+=== HTML tables ===
+
+Instead of an ASCII table, you can call get_html_string to get a HTML `<table>` structure.
+
+By default, the `<table>` returned by get_html_string will be a fairly plain looking table in a web browser, and will not necessarily reflect e.g. your PrettyTable's settings regarding alignment, line ruling, padding etc.  If you call get_html_string with the format=True keyword argument, PrettyTable will generate code which attempts to match these settings as best as possible within the constraints of the HTML table specification.
+
+You can use the "attribute" keyword argument to pass a dictionary of HTML attributes that should appear in the opening `<table>` tag, e.g. if you want to get "`<table class="foo">`", so that you can use CSS to style your table instead of relying on PrettyTable's format=True option, then use:
+
 {{{
-print(x.get_string())
+x.get_string(attributes = {"class": "foo"})
 }}}
-on Python 3.x.
 
 == Selecting subsets of data ==
 
 If you're only interested in showing some of the fields in your table, you can do this:
 
 {{{
-print x.get_string(fields=["City name", "Population"])
+x.get_string(fields=["City name", "Population"])
 }}}
-(or use print() for Python 3.x) and get this:
+
+to get a "sub table":
 
 {{{
 +-----------+------------+
@@ -164,6 +173,12 @@ which gives you this:
 | Brisbane  | 5905 |  1857594   |      1146.4     |
 | Darwin    | 112  |   120900   |      1714.7     |
 +-----------+------+------------+-----------------+
+}}}
+
+If you want to permanently get rid of all the rows other than the first 3, you can create a new PrettyTable object with only those rules by slicing the table as if it were a Python list:
+
+{{{
+new_table = old_table[0:3]
 }}}
 
 == Sorting tables ==
@@ -218,13 +233,3 @@ Similarly, you can set reversesort to be permanently True or False in the same w
 == Formatting options ==
 
 PrettyTable supports lots of formatting options to control the appearance of your table.
-
-== Making HTML tables ==
-
-Instead of an ASCII table, you can call get_html_string to get a HTML `<table>` structure.  get_html_string() supports most of the same arguments as get_string, so you can select only some rows or columns, do sorting, etc.
-
-You can use the "attribute" argument to pass a dictionary of HTML attributes that should appear in the opening `<table>` tag, e.g. if you want to get "`<table class="foo">`", so that you can use CSS to style your table, then use:
-
-{{{
-x.get_string(attributes = {"class": "foo"})
-}}}
