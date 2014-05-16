@@ -4,6 +4,8 @@
 PrettyTable is best explained by example. It is designed to let you write something nice and simple like this:
 
 {{{
+from prettytable import PrettyTable
+
 x = PrettyTable(["City name", "Area", "Population", "Annual Rainfall"])
 x.align["City name"] = "l" # Left align city names
 x.padding_width = 1 # One space between column edges and contents (default)
@@ -33,7 +35,7 @@ in order to get something that looks like this:
 +-----------+------+------------+-----------------+
 }}}
 
-PrettyTable makes it easy to display data in a nice and neat but non-graphical format that you can use in command line programs, automatically generated emails, etc.
+PrettyTable makes it easy to display data in a nice and neat but non-graphical format that you can use in command line programs, automatically generated emails, etc.  Note that the results won't look right unless you use a monospace font.
 
 == Getting data into tables ==
 
